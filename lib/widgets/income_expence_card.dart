@@ -50,7 +50,7 @@ class _IncomeExpenceCardState extends State<IncomeExpenceCard> {
               children: [
                 Text(
                   widget.title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
                     color: kWhite,
                     fontWeight: FontWeight.w500,
@@ -58,7 +58,7 @@ class _IncomeExpenceCardState extends State<IncomeExpenceCard> {
                 ),
                 Text(
                   "\$${widget.amount.toStringAsFixed(0)}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     color: kWhite,
                     fontWeight: FontWeight.bold,
