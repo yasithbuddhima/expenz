@@ -31,13 +31,23 @@ class UserServices {
       await prefs.setString("email", email);
 
       // Show a massage to the user
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("User details stored successfully"),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("User details stored successfully"),
+          ),
+        );
+      }
     } catch (e) {
       e.toString();
     }
+  }
+
+  // Method to check weather the username is saved in the shared pref
+  static Future<bool> checkUsername() async {
+    // create a instance
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userName = prefs.getString("userName");
+    return userName != null;
   }
 }

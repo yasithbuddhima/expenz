@@ -1,4 +1,5 @@
-import 'package:expenz/screens/user_services.dart';
+import 'package:expenz/screens/main_screen.dart';
+import 'package:expenz/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/constants/constants.dart';
@@ -182,6 +183,16 @@ class _UserDataScreenState extends State<UserDataScreen> {
                               confirmPassword: confirmPassword,
                               context: context,
                             );
+
+                            // Navigate to main Screen
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MainScreen(),
+                                ),
+                              );
+                            }
                           }
                         },
                         child: const CustomButton(
