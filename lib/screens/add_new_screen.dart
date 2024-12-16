@@ -1,11 +1,18 @@
+import 'package:expenz/services/income_service.dart';
+import 'package:flutter/material.dart';
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/constants/constants.dart';
 import 'package:expenz/models/expence_model.dart';
 import 'package:expenz/models/income_model.dart';
-import 'package:flutter/material.dart';
+import 'package:expenz/services/expense_service.dart';
+import 'package:expenz/widgets/custom_button.dart';
+import 'package:intl/intl.dart';
 
 class AddNewScreen extends StatefulWidget {
-  const AddNewScreen({super.key});
+  final Function(Expense) addExpense;
+  final Function(Income) addIncome;
+  const AddNewScreen(
+      {super.key, required this.addExpense, required this.addIncome});
 
   @override
   State<AddNewScreen> createState() => _AddNewScreenState();
@@ -30,6 +37,10 @@ class _AddNewScreenState extends State<AddNewScreen> {
     super.dispose();
   }
 
+  // Date time
+  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +48,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefalutPadding),
+            padding: const EdgeInsets.only(top: kDefalutPadding),
             child: Stack(
               children: [
                 // Expence Income tabs
@@ -158,7 +169,6 @@ class _AddNewScreenState extends State<AddNewScreen> {
                 ),
                 // user data form
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.3),
                   decoration: const BoxDecoration(
@@ -268,6 +278,200 @@ class _AddNewScreenState extends State<AddNewScreen> {
                           ),
                           const SizedBox(
                             height: 20,
+                          ),
+                          // Date picker
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(2020),
+                                    lastDate: DateTime(2025),
+                                    initialDate: DateTime.now(),
+                                  ).then(
+                                    (value) {
+                                      if (value != null) {
+                                        setState(() {
+                                          _selectedDate = value;
+                                        });
+                                      }
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: kMainColor),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical: 10,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_month_outlined,
+                                          color: kWhite,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Select Date",
+                                          style: TextStyle(
+                                            color: kWhite,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                DateFormat.yMMMd().format(_selectedDate),
+                                style: const TextStyle(
+                                  color: kGrey,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                  ).then(
+                                    (value) {
+                                      if (value != null) {
+                                        setState(() {
+                                          _selectedTime = DateTime(
+                                              _selectedDate.year,
+                                              _selectedDate.month,
+                                              _selectedDate.day,
+                                              value.hour,
+                                              value.minute);
+                                        });
+                                      }
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: kYellow,
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical: 10,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          color: kWhite,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Select Time",
+                                          style: TextStyle(
+                                            color: kWhite,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                DateFormat.jm().format(_selectedTime),
+                                style: const TextStyle(
+                                  color: kGrey,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Divider(
+                            color: kLightGrey,
+                            thickness: 5,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          // Add button
+                          GestureDetector(
+                            onTap: () async {
+                              if (_selectedMethod == 0) {
+                                // Save the expence or the income data to shared prfs.
+                                List<Expense> loadedExpenses =
+                                    await ExpenceService.loadExpenses();
+
+                                Expense expense = Expense(
+                                  id: loadedExpenses.length + 1,
+                                  title: _titleController.text,
+                                  amount: _amountController.text.isEmpty
+                                      ? 0
+                                      : double.parse(_amountController.text),
+                                  category: _expenseCategory,
+                                  date: _selectedDate,
+                                  time: _selectedTime,
+                                  description: _descriptionController.text,
+                                );
+
+                                // Add expense
+                                widget.addExpense(expense);
+
+                                // _titleController.dispose();
+                                // _descriptionController.dispose();
+                                // _amountController.dispose();
+                              } else {
+                                List<Income> loadedIncomes =
+                                    await IncomeServices.loadIncomes();
+
+                                Income income = Income(
+                                  id: loadedIncomes.length + 1,
+                                  title: _titleController.text,
+                                  amount: _amountController.text.isEmpty
+                                      ? 0
+                                      : double.parse(_amountController.text),
+                                  category: _incomeCategory,
+                                  date: _selectedDate,
+                                  time: _selectedTime,
+                                  description: _descriptionController.text,
+                                );
+
+                                widget.addIncome(income);
+
+                                // _titleController.dispose();
+                                // _descriptionController.dispose();
+                                // _amountController.dispose();
+                              }
+                            },
+                            child: CustomButton(
+                              buttonName: "Add",
+                              buttonColor: _selectedMethod == 0 ? kRed : kGreen,
+                            ),
                           ),
                         ],
                       ),

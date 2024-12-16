@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 20,
                           ),
                           Text(
-                            "Hello ${userName}",
+                            "Hello $userName",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             imageUrl: "assets/images/income.png",
                             bgColor: kGreen,
                           ),
-                          const IncomeExpenceCard(
+                          IncomeExpenceCard(
                             title: "Expence",
                             amount: 1300,
                             imageUrl: "assets/images/expense.png",
