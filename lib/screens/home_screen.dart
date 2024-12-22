@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 20,
                     ),
                     widget.expensesList.isEmpty
-                        ? Text(
+                        ? const Text(
                             "No Expenses added yet. Add expenses to see here",
                             style: TextStyle(
                               fontSize: 16,

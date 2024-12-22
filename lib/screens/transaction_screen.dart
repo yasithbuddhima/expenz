@@ -63,7 +63,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     child: Column(
                       children: [
                         widget.expensesList.isEmpty
-                            ? Text(
+                            ? const Text(
                                 "No Expenses added yet. Add expenses to see here",
                                 style: TextStyle(
                                   fontSize: 16,
@@ -121,7 +121,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     child: Column(
                       children: [
                         widget.expensesList.isEmpty
-                            ? Text(
+                            ? const Text(
                                 "No Incomes added yet. Add incomes to see here",
                                 style: TextStyle(
                                   fontSize: 16,

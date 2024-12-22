@@ -19,7 +19,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   // current page index
-  int _currentPageIndex = 0;
+  int _currentPageIndex = 3;
 
   List<Expense> expenseList = [];
   List<Income> incomeList = [];
@@ -81,6 +81,41 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // Category total expenses
+
+  Map<ExpenseCategory, double> calculateExpenseCategories() {
+    Map<ExpenseCategory, double> categoryTotals = {
+      ExpenseCategory.food: 0,
+      ExpenseCategory.health: 0,
+      ExpenseCategory.shopping: 0,
+      ExpenseCategory.subscription: 0,
+      ExpenseCategory.transport: 0,
+    };
+
+    for (Expense expense in expenseList) {
+      categoryTotals[expense.category] =
+          categoryTotals[expense.category]! + expense.amount;
+    }
+    return categoryTotals;
+  }
+
+  // Category total incomes
+
+  Map<IncomeCategory, double> calculateIncomeCategories() {
+    Map<IncomeCategory, double> categoryTotals = {
+      IncomeCategory.freelance: 0,
+      IncomeCategory.passive: 0,
+      IncomeCategory.salary: 0,
+      IncomeCategory.sales: 0,
+    };
+
+    for (Income income in incomeList) {
+      categoryTotals[income.category] =
+          categoryTotals[income.category]! + income.amount;
+    }
+    return categoryTotals;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
@@ -98,7 +133,10 @@ class _MainScreenState extends State<MainScreen> {
         addExpense: addNewExpense,
         addIncome: addNewIncome,
       ),
-      const BudgetsScreen(),
+      BudgetsScreen(
+        expenseCategoryTotal: calculateExpenseCategories(),
+        incomeCategoryTotal: calculateIncomeCategories(),
+      ),
       const ProfileScreen()
     ];
     return Scaffold(
