@@ -68,7 +68,9 @@ class _CategoryCardState extends State<CategoryCard> {
                         width: 10,
                       ),
                       Text(
-                        "${(widget.amount / widget.total * 100).toStringAsFixed(2)} %",
+                        widget.amount != 0
+                            ? "${(widget.amount / widget.total * 100).toStringAsFixed(2)} %"
+                            : "0 %",
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,

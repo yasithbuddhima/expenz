@@ -115,7 +115,7 @@ class IncomeServices {
   }
 
   // Function to delete all incomes
-  Future<void> deleteAllIncomes(BuildContext context) async {
+  static Future<void> deleteAllIncomes(BuildContext context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 

@@ -164,21 +164,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(kDefalutPadding),
                 child: Column(
                   children: [
+                    // ignore: prefer_const_constructors
                     Row(
-                      children: [
-                        const Text(
+                      children: const [
+                        Text(
                           "Recent Transactions",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: kBlack,
-                          ),
-                        ),
-                        Container(
-                          decoration:
-                              BoxDecoration(color: kDefaultIconLightColor),
-                          child: const Text(
-                            "See All",
                           ),
                         )
                       ],

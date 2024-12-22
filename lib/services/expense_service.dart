@@ -118,7 +118,7 @@ class ExpenceService {
   }
 
   //delete all expenses from shared preferences
-  Future<void> deleteAllExpenses(BuildContext context) async {
+  static Future<void> deleteAllExpenses(BuildContext context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove(_expensesKey);
