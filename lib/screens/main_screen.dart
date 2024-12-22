@@ -19,7 +19,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   // current page index
-  int _currentPageIndex = 1;
+  int _currentPageIndex = 0;
 
   List<Expense> expenseList = [];
   List<Income> incomeList = [];
@@ -73,13 +73,26 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // Function to remove income
+  void removeIncome(Income income) async {
+    IncomeServices.deleteIncome(income.id, context);
+    setState(() {
+      incomeList.remove(income);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      const HomeScreen(),
+      HomeScreen(
+        expensesList: expenseList,
+        incomeList: incomeList,
+      ),
       TransactionScreen(
         expensesList: expenseList,
         onDismissedExpense: removeExpense,
+        incomesList: incomeList,
+        onDismissedIncome: removeIncome,
       ),
       AddNewScreen(
         addExpense: addNewExpense,

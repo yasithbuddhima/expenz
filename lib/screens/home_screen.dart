@@ -1,11 +1,18 @@
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/constants/constants.dart';
+import 'package:expenz/models/expence_model.dart';
+import 'package:expenz/models/income_model.dart';
 import 'package:expenz/services/user_services.dart';
+import 'package:expenz/widgets/expense_card.dart';
 import 'package:expenz/widgets/income_expence_card.dart';
+import 'package:expenz/widgets/line_chart_sample.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final List<Expense> expensesList;
+  final List<Income> incomeList;
+  const HomeScreen(
+      {super.key, required this.expensesList, required this.incomeList});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -15,6 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // For store the user name
   String userName = "";
 
+  double expenseTotal = 0;
+  double incomeTotal = 0;
+
   @override
   void initState() {
     // get the username from the shared pref.
@@ -23,6 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           userName = value["userName"]!;
         });
+      }
+    });
+
+    setState(() {
+      for (var i = 0; i < widget.expensesList.length; i++) {
+        expenseTotal += widget.expensesList[i].amount;
+      }
+      for (var i = 0; i < widget.incomeList.length; i++) {
+        incomeTotal += widget.incomeList[i].amount;
       }
     });
     super.initState();
@@ -94,18 +113,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IncomeExpenceCard(
                             title: "Income",
-                            amount: 2000,
+                            amount: incomeTotal,
                             imageUrl: "assets/images/income.png",
                             bgColor: kGreen,
                           ),
                           IncomeExpenceCard(
                             title: "Expence",
-                            amount: 1300,
+                            amount: expenseTotal,
                             imageUrl: "assets/images/expense.png",
                             bgColor: kRed,
                           ),
@@ -113,6 +132,86 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     ],
                   ),
+                ),
+              ),
+
+              // Line chart
+              const Padding(
+                padding: EdgeInsets.all(
+                  kDefalutPadding,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Spend Frequency",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: kBlack,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    LineChartSample(),
+                  ],
+                ),
+              ),
+
+              // recent transactions
+              Padding(
+                padding: const EdgeInsets.all(kDefalutPadding),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          "Recent Transactions",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: kBlack,
+                          ),
+                        ),
+                        Container(
+                          decoration:
+                              BoxDecoration(color: kDefaultIconLightColor),
+                          child: const Text(
+                            "See All",
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    widget.expensesList.isEmpty
+                        ? Text(
+                            "No Expenses added yet. Add expenses to see here",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: kGrey,
+                            ),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: widget.expensesList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              Expense expense = widget.expensesList[index];
+                              return ExpenseCard(
+                                title: expense.title,
+                                description: expense.description,
+                                date: expense.date,
+                                time: expense.time,
+                                category: expense.category,
+                                amount: expense.amount,
+                              );
+                            },
+                          ),
+                  ],
                 ),
               )
             ],

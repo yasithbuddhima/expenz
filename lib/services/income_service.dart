@@ -70,7 +70,7 @@ class IncomeServices {
   }
 
   // Function to delete an income
-  Future<void> deleteIncome(int id, BuildContext context) async {
+  static Future<void> deleteIncome(int id, BuildContext context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String>? existingIncomes = prefs.getStringList(_incomeKey);
