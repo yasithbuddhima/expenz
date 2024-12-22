@@ -22,6 +22,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
   // State to track the expence or income
   int _selectedMethod = 0;
 
+  final _formKey = GlobalKey<FormState>();
   ExpenseCategory _expenseCategory = ExpenseCategory.food;
   IncomeCategory _incomeCategory = IncomeCategory.salary;
 
@@ -181,6 +182,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         children: [
                           // category selector drop down
@@ -230,6 +232,11 @@ class _AddNewScreenState extends State<AddNewScreen> {
                           // Title feild
                           TextFormField(
                             controller: _titleController,
+                            validator: (value) {
+                              return value!.isEmpty
+                                  ? "Please Enter a title"
+                                  : null;
+                            },
                             decoration: InputDecoration(
                               hintText: "Title",
                               border: OutlineInputBorder(
@@ -247,6 +254,11 @@ class _AddNewScreenState extends State<AddNewScreen> {
                           // Description feild
                           TextFormField(
                             controller: _descriptionController,
+                            validator: (value) {
+                              return value!.isEmpty
+                                  ? "Please Enter a description"
+                                  : null;
+                            },
                             decoration: InputDecoration(
                               hintText: "Description",
                               border: OutlineInputBorder(
@@ -264,6 +276,18 @@ class _AddNewScreenState extends State<AddNewScreen> {
                           // Amount feild
                           TextFormField(
                             controller: _amountController,
+                            validator: (value) {
+                              double? amount = double.tryParse(value!);
+                              if (value.isEmpty) {
+                                return "Please Enter a amount";
+                              }
+
+                              if (amount == null || amount <= 0) {
+                                return "Please Enter a valid amount";
+                              } else {
+                                return null;
+                              }
+                            },
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: "Amount",
@@ -422,7 +446,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
                           // Add button
                           GestureDetector(
                             onTap: () async {
-                              if (_selectedMethod == 0) {
+                              if (_selectedMethod == 0 &&
+                                  _formKey.currentState!.validate()) {
                                 // Save the expence or the income data to shared prfs.
                                 List<Expense> loadedExpenses =
                                     await ExpenceService.loadExpenses();
@@ -445,7 +470,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
                                 // _titleController.dispose();
                                 // _descriptionController.dispose();
                                 // _amountController.dispose();
-                              } else {
+                              } else if (_formKey.currentState!.validate()) {
                                 List<Income> loadedIncomes =
                                     await IncomeServices.loadIncomes();
 
